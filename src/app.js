@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 import fileUpload from "express-fileupload";
 import { config } from "dotenv";
 import { createTables } from "./utils/createTables.js";
+import { errorMiddleware } from "./Middleware/errorMiddleware.js";
 config({path:"./Config/Config.env"});
 const app = express();
 app.use(express.json());
@@ -21,6 +22,6 @@ app.use(fileUpload({
     useTempFiles:true,
 }));
 createTables()
-
+app.use(errorMiddleware);
 
 export default app;
