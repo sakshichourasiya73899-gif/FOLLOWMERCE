@@ -10,11 +10,12 @@ export async function createProductTable(){
             stock INTEGER NOT NULL CHECK(stock >= 0),
             category VARCHAR(255) NOT NULL,
             rating DECIMAL(2,1) DEFAULT 0 CHECK(rating >= 0 AND rating <= 5),
-            Created_by UUID NOT NULL,
+            created_by UUID NOT NULL,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (Created_by) REFERENCES users(id) ON DELETE CASCADE
-        );`;
+            FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE CASCADE
+        );`
+        ;
         await database.query(query);
     }
     catch(error){

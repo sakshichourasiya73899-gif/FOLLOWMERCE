@@ -1,13 +1,14 @@
-import database from "../Database/db";  
+import database from "../Database/db.js";  
+
 export async function createUserTable(){
     try{
        const query= `
         CREATE TABLE IF NOT EXISTS users(
         id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-        name VARCHAR(255) NOT NULL,(char_length(name)>=3),
+        name VARCHAR(255) NOT NULL CHECK (char_length(name) >= 3),
         email VARCHAR(255) NOT NULL UNIQUE,
         password TEXT NOT NULL,
-        role VARCHAR(50) DEFAULT 'User' CHECK(role IN('User','Admin')),
+        role VARCHAR(50) DEFAULT 'User' CHECK (role IN ('User','Admin')),
         avatar JSONB DEFAULT NULL,
         reset_password_token TEXT DEFAULT NULL,
         reset_password_expires TIMESTAMP DEFAULT NULL,

@@ -1,18 +1,18 @@
-import database from "../Database/db";
+import database from "../Database/db.js";
 export async function createProductReviewsTable(){
     try{
         const query= `
         CREATE TABLE IF NOT EXISTS reviews(
-        id UUID DEFAULT gen_random_uuid() PRIMARY KEY
+        id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
         product_id UUID NOT NULL,
         user_id UUID NOT NULL,
         rating DECIMAL(2,1) NOT NULL CHECK(rating >= 0 AND rating <= 5),
-        comment TEXT,
+        comment TEXT NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE),
+        FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE,
         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE);
-        `
+        `;
         await database.query(query);
     }
     catch(error){

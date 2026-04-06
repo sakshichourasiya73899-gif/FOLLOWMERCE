@@ -1,4 +1,4 @@
-import database from "../Database/db";
+import database from "../Database/db.js";
 export async function createShippingInfoTable(){
     try{
         const query= `

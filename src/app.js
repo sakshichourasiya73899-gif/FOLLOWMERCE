@@ -4,6 +4,7 @@ import morgan from "morgan";
 import cookieParser from "cookie-parser";
 import fileUpload from "express-fileupload";
 import { config } from "dotenv";
+import { createTables } from "./utils/createTables.js";
 config({path:"./Config/Config.env"});
 const app = express();
 app.use(express.json());
@@ -19,6 +20,7 @@ app.use(fileUpload({
     tempFileDir:"./uploads",
     useTempFiles:true,
 }));
+createTables()
 
 
 export default app;
