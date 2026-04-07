@@ -14,7 +14,7 @@ style="display: inline-block; font-size: 16px; font-weight: bold; color: #000; t
  <p style="font-size: 16px; color: #ccc;">If the button above doesn’t work, copy and paste the following URL into your browser:</p>
  <p style="font-size: 16px; color: #fff; word-wrap: break-word;">${resetPasswordUrl}</p>
  <footer style="margin-top: 20px; text-align: center; font-size: 14px; color: #666;">
-  <p>Thank you,<br>Ecommerce Team</p>
+  <p>Thank you,<br>Flowmerce Team</p>
   <p style="font-size: 12px; color: #444;">This is an automated message. Please do not reply to this email.</p>
   </footer>
  </div>
