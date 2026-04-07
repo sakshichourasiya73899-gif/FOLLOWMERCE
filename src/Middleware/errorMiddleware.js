@@ -13,7 +13,7 @@ export const errorMiddleware= (err, req, res, next)=>{
         const message= `Duplicate value entered for ${Object.keys(err.keyValue)} field, please choose another value`;
         err= new ErrorHandler(message, 400);
     }
-    if(err.name = "JsonWebTokenError"){
+    if(err.name === "JsonWebTokenError"){
         err= new ErrorHandler("Invalid token, please login again", 401);
     }
     if(err.name === "TokenExpiredError"){

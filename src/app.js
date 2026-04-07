@@ -6,13 +6,15 @@ import fileUpload from "express-fileupload";
 import { config } from "dotenv";
 import { createTables } from "./utils/createTables.js";
 import { errorMiddleware } from "./Middleware/errorMiddleware.js";
+import authRouter from "./Routes/authRouter.js"
 config({path:"./Config/Config.env"});
 const app = express();
 app.use(express.json());
+
 app.use(cors({
     origin:[process.env.FRONTEND_URL,process.env.DASHBOARD_URL],
     methods:["GET","POST","PUT","DELETE"],
-    credentials:true
+    credentials:true 
 }));
 app.use(morgan("dev"));
 app.use(cookieParser());
@@ -21,7 +23,10 @@ app.use(fileUpload({
     tempFileDir:"./uploads",
     useTempFiles:true,
 }));
+
+app.use("/api/auth",authRouter);
 createTables()
 app.use(errorMiddleware);
+
 
 export default app;
