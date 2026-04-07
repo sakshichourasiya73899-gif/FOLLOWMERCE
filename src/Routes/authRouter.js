@@ -1,5 +1,5 @@
 import express from "express"
-import { register,login,logout,getUser } from "../controllers/authController.js";
+import { register,login,logout,getUser, forgotPassword } from "../controllers/authController.js";
 import { isAuthenticated } from "../Middleware/authMiddleware.js";
 
 const router = express.Router();
@@ -11,5 +11,7 @@ router.post("/login",login)
 router.get("/logout",isAuthenticated,logout)
 /*@API-/api/auth/getUser*/
 router.get("/me",isAuthenticated,getUser)
+/*@API-/api/auth/password/forgot */
+router.post("/password/forgot",forgotPassword)
 
 export default router;
