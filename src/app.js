@@ -7,7 +7,10 @@ import { config } from "dotenv";
 import { createTables } from "./utils/createTables.js";
 import { errorMiddleware } from "./Middleware/errorMiddleware.js";
 import authRouter from "./Routes/authRouter.js"
-config({path:"./Config/Config.env"});
+import productRouter from "./Routes/productRoutes.js"
+import adminRouter from "./Routes/adminRouter.js"
+import orderRouter from "./Routes/orderRouter.js"
+
 const app = express();
 app.use(express.json());
 
@@ -25,6 +28,10 @@ app.use(fileUpload({
 }));
 
 app.use("/api/auth",authRouter);
+app.use("/api/product",productRouter);
+app.use("/api/admin",adminRouter);
+app.use("/api/order",orderRouter)
+//app.use("/api/order",orderRouter)
 createTables()
 app.use(errorMiddleware);
 

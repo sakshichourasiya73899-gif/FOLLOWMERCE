@@ -15,14 +15,17 @@ export const isAuthenticated = catchAsyncError(async(req,res,next)=>{
     req.user = user.rows[0];
     next();
 });
-export const authorizedRoles = (...roles)=>{
-    return(req,res,next)=>{
-        if(!roles.includes(req.user.role)){
-            new ErrorHandler(
-                `Role:$(req.user.role) is not allowed to access the resource`,
-                403
-            );
-        }
-        next();
-    };
-};
+
+ export const authorizedRoles = (...roles) => {
+  return (req, res, next) => {
+    if (!roles.includes(req.user.role)) {
+      return next(
+        new ErrorHandler(
+          `Role: ${req.user.role} is not allowed to access this resource.`,
+          403
+        )
+      );
+    }
+    next();
+  };
+ };

@@ -8,7 +8,7 @@ import { generateEmailTemplate } from "../utils/generateForgotPasswordEmail.js";
 import {sendEmail}  from "../services/sendEmail.js";
 import crypto from "crypto"
 import {v2 as cloudinary } from "cloudinary"
-import "../services/choudinary.js"
+import "../services/cloudinary.js"
 
 export const register = catchAsyncError(async(req,res,next)=>{
     const{name,email,password}=req.body
