@@ -7,7 +7,7 @@ export async function createOrderTable(){
         total_price DECIMAL(10,2) NOT NULL CHECK(total_price >= 0),
         tax_price DECIMAL(10,2) NOT NULL CHECK(tax_price >= 0),
         shipping_price DECIMAL(10,2) NOT NULL CHECK(shipping_price >= 0),
-        order_status VARCHAR(255) NOT NULL CHECK(order_status IN ('pending', 'processing', 'shipped', 'delivered', 'cancelled')),
+        order_status VARCHAR(255) NOT NULL CHECK(order_status IN ('pending', 'paid', 'processing', 'shipped', 'delivered', 'cancelled')),
         paid_at TIMESTAMP CHECK(paid_at IS NULL OR paid_at <= CURRENT_TIMESTAMP),
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

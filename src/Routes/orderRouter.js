@@ -7,6 +7,7 @@ import {
   updateOrderStatus,
   deleteOrder,
 } from "../controllers/orderController.js";
+import { verifyPayment } from "../controllers/paymentController.js";
 import {
   isAuthenticated,
   authorizedRoles,
@@ -14,7 +15,7 @@ import {
 
 const router = express.Router();
 router.post("/new", isAuthenticated, placeNewOrder);
-router.get("/:orderId", isAuthenticated, fetchSingleOrder);
+router.post("/payment/verify", isAuthenticated, verifyPayment);
 router.get("/orders/me", isAuthenticated, fetchMyOrders);
 router.get(
   "/admin/getall",
@@ -22,6 +23,7 @@ router.get(
   authorizedRoles("Admin"),
   fetchAllOrders
 );
+router.get("/:orderId", isAuthenticated, fetchSingleOrder);
 router.put(
   "/admin/update/:orderId",
   isAuthenticated,

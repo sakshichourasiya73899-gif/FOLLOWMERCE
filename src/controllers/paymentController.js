@@ -46,7 +46,7 @@ export const verifyPayment = async (req, res) => {
 
     // ✅ Mark order paid
     await database.query(
-      `UPDATE orders SET paid_at = NOW() WHERE id = $1 order_status='paid'`,
+      `UPDATE orders SET paid_at = NOW(), order_status = 'paid' WHERE id = $1`,
       [orderId]
     );
 

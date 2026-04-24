@@ -83,61 +83,65 @@ export const placeNewOrder = catchAsyncError(async (req, res, next) => {
   );
 
   // ✅ TRANSACTION START
-  await database.query("BEGIN");
+  try {
+    await database.query("BEGIN");
 
-  // ✅ Create order
-  const orderResult = await database.query(
-    `INSERT INTO orders (buyer_id, total_price, tax_price, shipping_price, order_status)
-     VALUES ($1, $2, $3, $4, $5) RETURNING *`,
-    [req.user.id, total_price, tax_price, shipping_price,"pending"]
-  );
+    // ✅ Create order
+    const orderResult = await database.query(
+      `INSERT INTO orders (buyer_id, total_price, tax_price, shipping_price, order_status)
+       VALUES ($1, $2, $3, $4, $5) RETURNING *`,
+      [req.user.id, total_price, tax_price, shipping_price, "pending"]
+    );
 
-  const orderId = orderResult.rows[0].id;
+    const orderId = orderResult.rows[0].id;
 
-  // Attach orderId to items
-  for (let i = 0; i < values.length; i += 6) {
-    values[i] = orderId;
+    // Attach orderId to items
+    for (let i = 0; i < values.length; i += 6) {
+      values[i] = orderId;
+    }
+
+    // ✅ Insert order items
+    await database.query(
+      `INSERT INTO order_items 
+       (order_id, product_id, quantity, price, image, title)
+       VALUES ${placeholders.join(", ")} RETURNING *`,
+      values
+    );
+
+    // ✅ Shipping info
+    await database.query(
+      `INSERT INTO shipping_info 
+       (order_id, full_name, state, city, country, address, pincode, phone)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+      [orderId, full_name, state, city, country, address, pincode, phone]
+    );
+
+    // ✅ Create Razorpay order
+    const razorpayOrder = await razorpay.orders.create({
+      amount: total_price * 100,
+      currency: "INR",
+      receipt: orderId,
+    });
+
+    // ✅ Save payment entry
+    await database.query(
+      `INSERT INTO payments (order_id, razorpay_order_id, status)
+       VALUES ($1, $2, $3)`,
+      [orderId, razorpayOrder.id, "Pending"]
+    );
+
+    await database.query("COMMIT");
+
+    res.status(200).json({
+      success: true,
+      orderId,
+      razorpayOrderId: razorpayOrder.id,
+      amount: razorpayOrder.amount,
+    });
+  } catch (err) {
+    await database.query("ROLLBACK");
+    return next(new ErrorHandler(err.message || "Order placement failed", 500));
   }
-
-  // ✅ Insert order items
-  await database.query(
-    `INSERT INTO order_items 
-     (order_id, product_id, quantity, price, image, title)
-     VALUES ${placeholders.join(", ")} RETURNING *`,
-    values
-  );
-
-  // ✅ Shipping info
-  await database.query(
-    `INSERT INTO shipping_info 
-     (order_id, full_name, state, city, country, address, pincode, phone)
-     VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
-    [orderId, full_name, state, city, country, address, pincode, phone]
-  );
-
-  // ✅ Create Razorpay order
-  const razorpayOrder = await razorpay.orders.create({
-    amount: total_price * 100,
-    currency: "INR",
-    receipt: "orderId",
-  });
-
-  // ✅ Save payment entry
-  await database.query(
-    `INSERT INTO payments (order_id, razorpay_order_id, status)
-     VALUES ($1, $2, $3)`,
-    [orderId, razorpayOrder.id, "Pending"]
-  );
-
-  await database.query("COMMIT");
-
-  res.status(200).json({
-    success: true,
-    orderId,
-    razorpayOrderId: razorpayOrder.id,
-    amount: razorpayOrder.amount,
-  });
-  
 });
 export const fetchSingleOrder = catchAsyncError(async (req, res, next) => {
   const { orderId } = req.params;

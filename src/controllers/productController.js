@@ -9,27 +9,27 @@ import { getAIRecommendation } from "../services/getAIRecommendation.js";
 export const createProduct = catchAsyncError(async (req, res, next) => {
   const { name, description, price, category, stock } = req.body;
 
-   console.log(req.body)
+  console.log(req.body)
 
-   console.log("RAW BODY:", req.body);
+  console.log("RAW BODY:", req.body);
 
 
 
-console.log("VALUES:", {
-  name,
-  description,
-  price,
-  category,
-  stock,
-  types: {
-    name: typeof name,
-    description: typeof description,
-    price: typeof price,
-    category: typeof category,
-    stock: typeof stock
-  }
-});
-  
+  console.log("VALUES:", {
+    name,
+    description,
+    price,
+    category,
+    stock,
+    types: {
+      name: typeof name,
+      description: typeof description,
+      price: typeof price,
+      category: typeof category,
+      stock: typeof stock
+    }
+  });
+
   const created_by = req.user.id;
 
   if (!name || !description || !price || !category || !stock) {
@@ -37,7 +37,7 @@ console.log("VALUES:", {
       new ErrorHandler("Please provide complete product details.", 400)
     );
   }
- 
+
 
   let uploadedImages = [];
   if (req.files && req.files.images) {
@@ -197,12 +197,23 @@ export const fetchAllProducts = catchAsyncError(async (req, res, next) => {
   `;
   const topRatedResult = await database.query(topRatedQuery);
 
+  const parseImages = (rows) =>
+    rows.map((product) => ({
+      ...product,
+      images:
+        typeof product.images === "string"
+          ? JSON.parse(product.images)
+          : product.images,
+    }));
   res.status(200).json({
     success: true,
-    products: result.rows,
+    //products: result.rows,
+    products: parseImages(result.rows),
     totalProducts,
-    newProducts: newProductsResult.rows,
-    topRatedProducts: topRatedResult.rows,
+    //newProducts: newProductsResult.rows,
+    //topRatedProducts: topRatedResult.rows,
+    newProducts: parseImages(newProductsResult.rows),
+    topRatedProducts: parseImages(topRatedResult.rows),
   });
 });
 
@@ -211,19 +222,19 @@ export const updateProduct = catchAsyncError(async (req, res, next) => {
   const { name, description, price, category, stock } = req.body;
   console.log("BODY:", req.body);
   console.log("VALUES:", {
-  name,
-  description,
-  price,
-  category,
-  stock,
-  types: {
-    name: typeof name,
-    description: typeof description,
-    price: typeof price,
-    category: typeof category,
-    stock: typeof stock
-  }
-});
+    name,
+    description,
+    price,
+    category,
+    stock,
+    types: {
+      name: typeof name,
+      description: typeof description,
+      price: typeof price,
+      category: typeof category,
+      stock: typeof stock
+    }
+  });
 
   if (!name || !description || !price || !category || !stock) {
     return next(

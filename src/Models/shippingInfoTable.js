@@ -8,12 +8,13 @@ export async function createShippingInfoTable(){
             full_name VARCHAR(255) NOT NULL,
             country VARCHAR(255) NOT NULL,
             state VARCHAR(255) NOT NULL,
-            pincde VARCHAR(20) NOT NULL,
-            phone_number VARCHAR(20) NOT NULL,
+            city VARCHAR(255) NOT NULL,
+            pincode VARCHAR(20) NOT NULL,
+            phone VARCHAR(20) NOT NULL,
             address TEXT NOT NULL,
-            FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE
         );
         `;
         await database.query(query);
